@@ -1,46 +1,41 @@
 ---
 name: using-data-dev
 description: >-
-  Use when starting any data-development conversation, or when unsure which
-  data-dev skill applies — database QC, schema/DDL review, ETL/pipeline data
-  checks, financial time-series or cross-section quality, field naming vs value
-  conventions, missing/null/outlier sampling — before deep work. Single entry
-  and smart router for the data-dev-skills suite.
+  Routes data engineering and governance work by responsibility. Use when a
+  request concerns 数据契约、DDL、管道开发、质量验收、查询接口、数据治理或合规，
+  or when the correct data-dev skill is unclear. Routes financial research-library
+  quality work to finance-data-qc; does not connect to data sources or execute
+  the work itself.
 ---
 
-# Using data-dev
+# 数据开发任务路由
 
-<SUBAGENT-STOP>
-If you were dispatched as a subagent to execute a specific task, ignore this skill.
-</SUBAGENT-STOP>
+## MUST
 
-## When to use
+1. 只路由，不连接数据源、不执行查询、不生成业务交付物。
+2. 只选择当前仓库真实提供的 skill；未安装的能力必须明确说明不可用。
+3. 一次选择一个主责任。跨领域任务先确认当前要交付的结果，再处理后续责任。
 
-- Session start in a workspace that uses **data-dev-skills**
-- Unsure which data-dev skill applies
-- User mentions 库表质检、数据质量、DDL、缺失值、异常值、时序/截面完备、字段名与取值不一致、金融数据校验
+## 责任分类
 
-## How to use
+- **数据契约 / DDL**：schema、主键、类型、命名、分区和兼容性设计。当前尚未提供执行 skill。
+- **管道开发**：增量、幂等、回补、重跑和故障恢复。当前尚未提供执行 skill。
+- **质量验收**：证明数据是否满足可追溯规则。
+  - 金融投研研究库（行情、财务、公告事件、主数据、指数基金、宏观行业）→ **finance-data-qc**，它直接执行验收，不再往下路由。
+  - 其他数据集 → 当前尚未提供专用执行 skill。
+- **查询接口**：视图/API 查询契约、过滤分页、时态和性能预算。当前尚未提供执行 skill。
+- **数据治理**：目录、血缘、责任人、SLA 和生命周期。当前尚未提供执行 skill。
+- **合规**：分类、最小权限、脱敏、导出、保留和审计。当前尚未提供执行 skill。
 
-1. Match the task to the **Skill map** below.
-2. Announce `Using <skill> to …`, read that skill, follow it.
-3. Do **not** open a database or write `data-qc/` from this router — only route.
+## 路由步骤
 
-## Skill map
+1. 用用户期望的最终交付物判断主责任，不按数据库或工具名称分类。
+2. 若主责任是金融投研质量验收，读取并执行 **finance-data-qc**。
+3. 若目标 skill 未安装，说明缺少的能力；不要用相邻 skill 冒充。
+4. 若一个请求包含多个责任，只询问一个会改变主责任的聚焦问题。
 
-| Situation | Skill |
-|-----------|--------|
-| Financial / market / factor table QC; null/missing/outliers; time-series or cross-section completeness; DDL/types/names/comments; naming/description vs actual value conventions | **finance-db-qc** |
-| Unsure which data-dev skill | Stay on **using-data-dev**, then pick from this table |
+## STOP
 
-```
-using-data-dev
-  → finance-db-qc   (table/collection quality + deliverables)
-  → (future skills) ETL / reconcile / …
-```
-
-## Checklist
-
-- [ ] data-dev-skills installed (else → README install)
-- [ ] Relevant skill identified
-- [ ] That skill read and followed; announced
+- 无法判断用户要的是“设计、开发、验收、服务、治理还是合规结论”。
+- 目标能力尚未提供。
+- 需要通过连接数据库才能完成路由判断。
