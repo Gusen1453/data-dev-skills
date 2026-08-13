@@ -5,10 +5,10 @@ Public monorepo of **Agent Skills for data development** — installable via ski
 ## Install
 
 ```bash
-npx skills add <owner>/data-dev-skills
+npx skills add Gusen1453/data-dev-skills
 ```
 
-Replace `<owner>` with the GitHub user or org that hosts this repo after you fork or clone the upstream URL.
+Forks: replace with your `owner/data-dev-skills`.
 
 ## Skills
 
