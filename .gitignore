@@ -1,0 +1,8 @@
+.env
+.env.*
+!.env.example
+data-qc/
+*.pem
+*.key
+.DS_Store
+node_modules/
