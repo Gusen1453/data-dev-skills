@@ -26,6 +26,37 @@
 
 每个候选角色都写 `依据`、`置信度`、`反证条件` 和需要补充的权威证据。未知市场前提时不套用其他市场的阈值或制度差异。
 
+### 关键词检索候选表/字段
+
+用户只给业务词（"利润表相关的表"）或要跨表找同义字段时，用关键词在表名/表描述/字段名/字段描述里模糊检索，先定位候选表，再进入分层采样。**这是发现步骤，不是结论**：找到候选后必须继续读元数据与真实行抽样，不能拿命中当口径。
+
+MySQL / Doris / StarRocks（information_schema 同构）：
+
+```sql
+SET @kw = '利润表';
+SELECT
+    c.TABLE_NAME       AS 表名,
+    t.TABLE_COMMENT    AS 表描述,
+    c.COLUMN_NAME      AS 字段名,
+    c.COLUMN_COMMENT   AS 字段描述,
+    c.ORDINAL_POSITION AS 序号
+FROM information_schema.COLUMNS c
+JOIN information_schema.TABLES t
+  ON t.TABLE_SCHEMA = c.TABLE_SCHEMA
+ AND t.TABLE_NAME   = c.TABLE_NAME
+WHERE c.TABLE_SCHEMA = 'one_platform'          -- 目标库；写 DATABASE() 表示当前库
+  AND (c.TABLE_NAME     LIKE CONCAT('%', @kw, '%')
+    OR t.TABLE_COMMENT  LIKE CONCAT('%', @kw, '%')
+    OR c.COLUMN_NAME    LIKE CONCAT('%', @kw, '%')
+    OR c.COLUMN_COMMENT LIKE CONCAT('%', @kw, '%'))
+ORDER BY c.TABLE_NAME, c.ORDINAL_POSITION
+LIMIT 200;                                     -- 预算：先限行数，按需扩大
+```
+
+`@kw` 中的 `%`、`_` 会被当通配符；部分客户端不能一次执行 `SET`+`SELECT`，把 `@kw` 换字面量即可。PostgreSQL（`pg_catalog` 的 `obj_description`/`col_description`）与 ClickHouse（`system.columns`）变体见 `finance-ddl-design/references/exploration.md`。
+
+质检高频用法：同一语义字段跨表不同名（`code` vs `sec_code`）会同时浮现，直接作为"命名与单位"缺陷族的同义词候选；接口层排查时用它对查询返回的字段反查库内定义。
+
 ## 选择分层样本
 
 按 `sampling-statistics.md` 的五阶段漏斗执行：元数据 → 小范围侦察 → 分层统计 → 异常下钻 → 有理由地扩大。不得跳过前四步直接跑全历史聚合。
