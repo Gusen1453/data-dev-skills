@@ -7,7 +7,7 @@ description: >-
   使用。路由：数据契约/DDL → finance-ddl-design，管道开发 → finance-pipeline-dev，查询接口 →
   finance-query-contract，质量验收 → finance-data-qc，数据治理/合规 → 暂未提供执行器。只负责路由
   与判断责任，不连接数据源、不执行查询、不生成业务交付物。主责任明确时应直接进入对应 skill，不
-  在此停留。
+  在此停留。如需设计方法先行，可用 /data-grill 敲定需求、/data-solid 审查数仓结构。
 ---
 
 # 数据开发任务路由
