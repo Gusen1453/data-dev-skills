@@ -13,6 +13,9 @@ npx skills add Gusen1453/data-dev-skills
 | Skill | 责任 |
 |---|---|
 | **using-data-dev** | 按数据契约、管道、质量、查询接口、治理、合规等工程责任路由 |
+| **finance-ddl-design** | 投研建表与 DDL 设计执行器：先探索现有库提取命名/类型/键/分区惯例，再产出带注释与约束的可执行 DDL、设计说明与数据契约 |
+| **finance-pipeline-dev** | 投研数据管道执行器：增量同步、幂等写入、参数化回补、重跑与故障恢复、调度依赖与 SLA，产出管道脚本与管道契约 |
+| **finance-query-contract** | 投研查询接口执行器（面向 AI LLM 工具与分析师）：入参简单、分页/筛选/批量、标的消歧与标准化代码、单位与空值分口径、json 转一段话的可读化转写，产出接口契约与规格 |
 | **finance-data-qc** | 投研数据质检执行器：重复、缺失、断档、错值、滞后、单位与命名不统一、注释歧义、维度污染、接口截断 |
 
 不确定使用哪个 skill 时，从 **using-data-dev** 开始。
@@ -29,11 +32,17 @@ npx skills add Gusen1453/data-dev-skills
 
 ## 业务项目交付物
 
+同一数据集的交付物由流水线 skill 协作产出，共用一份 `contract.yaml`：
+
 ```text
-finance-data-qc/<dataset-id>/
-  contract.yaml
-  checks/                     # 非 SQL 数据源使用原生可执行格式
-  runs/<run-id>/
+<dataset-id>/
+  contract.yaml              # finance-ddl-design：表结构契约（键/分区/时态/语义）
+  design.md                  # finance-ddl-design：设计说明
+  conventions.md             # finance-ddl-design：探索出的库内惯例
+  pipelines/                 # finance-pipeline-dev：增量/回补/重跑脚本与 pipeline.yaml
+  api/                       # finance-query-contract：接口契约、规格与 json→str 转写示例
+  checks/                    # finance-data-qc：监测脚本（非 SQL 数据源使用原生可执行格式）
+  runs/<run-id>/             # finance-data-qc：每次运行独立证据
     evidence.json
     report.md
 ```
