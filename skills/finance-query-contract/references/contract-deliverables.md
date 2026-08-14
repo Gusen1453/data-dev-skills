@@ -19,7 +19,7 @@ queries:
         type: "string | string[]"
         required: true
         max_items: 50
-        note: "接受标准代码/裸代码/名称/别名，接口内部消歧"
+        note: "允许不标准输入（代码/名称/别名/大小写/拼写变体），接口内部经消歧服务标准化"
       - name: trade_date
         type: "date"
         required: true
@@ -31,7 +31,7 @@ queries:
       schema:
         - field: code
           type: string
-          note: "标准化代码 MARKET.CODE，如 600000.SH"
+          note: "消歧服务返回的标准化代码（如 ticker.MIC），全接口统一格式"
         - field: close_price
           type: decimal
           unit: "元"
