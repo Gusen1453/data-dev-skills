@@ -58,6 +58,7 @@ queries:
 - `contract_ref` 指向 DDL 契约；字段单位、枚举、时区以契约为准，不重复定义。
 - `absence_policy` 五个口径必须有中文 message；接口实现与转写层共用同一份。
 - 未知项显式 `null` 或注明"待确认"，不默认套用其他市场。
+- 接口指标级字段（如 `chg_rate`）的**计算口径取 DDL 契约 `semantics.formula`**，出参字段与契约同义同算；接口不发明、不重算口径（与 `finance-query-contract/references/output-semantics.md` 的单位引用一致）。
 
 ## 与套件的衔接
 

@@ -41,15 +41,18 @@ freshness_policy: "已确认实时/T+1/披露制度；未知则显式为 null"
 semantics:
   - field: "字段"
     meaning: "口径"
+    formula: "可复算定义：引用同契约其他字段、声明时间口径与过滤条件，使检查可独立复算核验；原始取数写 '不派生'"
     evidence_level: CONFIRMED
     source: "契约、规范或确认记录的版本化引用"
 ```
 
 契约只保存已确认且预期跨运行稳定的语义。候选字段映射不要偷偷写成事实；把它放入运行证据并标为 `INFERRED`。市场、标的与覆盖起点未确认时，在契约中显式标注未知，不得默认套用其他市场。
 
+**口径必须可复算：** 每个 `semantics` 条目给 `formula`（对象 + 公式 + 时间口径 + 过滤条件），QC 检查能据此独立复算核验，而不是只读一句散文；无 `formula` 的字段，质检复算只能 `WATCH`。这与 DDL 契约（`finance-ddl-design/references/data-contract.md`）同构。
+
 ## `checks/`
 
-每个检查定义包含：
+**只含过甄别门的检查**（阶段二产出，见 SKILL.md）：高复发 × 高静默成本 × 成本可承受；能对照 `contract.semantics.formula` 复算核验的优先固化。一次性事故、低频可承受、成本不成比例的发现只进报告，不出现在 `checks/`。每个检查定义包含：
 
 - `check_id`：跨运行稳定，建议用缺陷族做前缀，例如 `DUP-PRIMARY-KEY-001`、`MISSING-FIELD-002`、`XTAB-UNIT-001`。
 - `rule_version`：规则或查询变化时递增。
@@ -57,6 +60,9 @@ semantics:
 - 依赖的 `CONFIRMED` 字段语义、市场规范和版本。
 - 参数化的数据范围与预算。
 - PASS/BLOCK/WATCH 的可验收判据。
+- **甄别依据（固化理由）** `triage`：复发风险（会不会再犯，一次性事故不固化）、静默失败成本（再犯且无人发现代价多大）、检测成本（贵则降频/降采样，成本不成比例则放弃）。三问都成立才固化。
+- **复算依据** `recalc_ref`：优先引用 `contract.semantics.formula` 的可复算定义，告警可被独立复算验证；无复算依据的写 `null` + "需先补契约"，不静默固化。
+- **运行策略**：`schedule`（跟随 `freshness.md` 四种更新制度显式声明：实时/T+1 定点/披露驱动/定期发布；未确认写 `null`，不默认日频）、`threshold`（告警阈值与连续失败次数）、`alert_on`（告警路由：给谁/什么级别）、`depends_on`（数据就绪依赖，如交易日历、上游表就绪）。
 
 SQL 数据源保存真实方言的 `.sql`；非 SQL 检查保存原生可执行格式。非 SQL 内容不得为了目录一致而伪装成 `.sql`。检查文件不得包含主机凭据、私钥、令牌或未脱敏样本。
 

@@ -89,7 +89,7 @@ SKILL.md 只给流程骨架和分发规则。具体方法在 `references/` 下�
 - **惯例清单** `conventions.md`：逐条惯例的观察、证据等级（OBSERVED/INFERRED）、依据、反证条件；强惯例标注出现次数。
 - **DDL** `.sql`：按引擎原生方言，含表注释与逐列注释、主键/唯一键、CHECK 与默认值、分区与索引；迁移类变更给出向后兼容写法；文件名带版本号（如 `0001_create_dwd_market_daily_bar.sql`）。
 - **设计说明** `design.md`：每张表的目的与消费者、主键设计理由、时态列职责、单位与币种、时区、复权口径、PIT 语义、与现有表的引用关系、待确认清单。
-- **数据契约** `contract.yaml`：与 `finance-data-qc/references/deliverables.md` 的 `contract.yaml` 同构，并新增 `schema` 字段描述列定义。只写 `CONFIRMED` 语义，未确认的写 `null` 并列入待确认清单。见 `references/data-contract.md`。
+- **数据契约** `contract.yaml`：与 `finance-data-qc/references/deliverables.md` 的 `contract.yaml` 同构，并新增 `schema` 字段描述列定义。只写 `CONFIRMED` 语义，未确认的写 `null` 并列入待确认清单；每条 `semantics` 给可复算的 `formula`（引用同契约字段、声明时间口径与过滤），使质检可独立复算核验。见 `references/data-contract.md`。
 
 ## 必须停下的情况
 
