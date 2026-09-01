@@ -47,11 +47,18 @@ schema:
     format: null
 semantics:
   - field: adj_factor
-    meaning: "后复权累计因子，前复权 = 后复权 / 最新因子"
+    meaning: "后复权累计因子；前复权 = 后复权 / 最新因子"
+    formula: "adj_factor_t = adj_factor_{t-1} × (1 + 除权除息因子变化)；复权价 = 未复权价 × adj_factor"
     evidence_level: CONFIRMED
     source: "contract v1.0.0 评审记录 / 供应商文档 v2"
   - field: close_price
     meaning: "收盘价，未复权，单位元"
+    formula: "交易日收盘价为原始行情取值，不派生"
+    evidence_level: CONFIRMED
+    source: "contract v1.0.0 评审记录"
+  - field: chg_rate
+    meaning: "日涨跌幅，百分数口径（+1.2% 存 1.2）"
+    formula: "(close_price_t − close_price_{t−1}) / close_price_{t−1} × 100，按交易日历取前收"
     evidence_level: CONFIRMED
     source: "contract v1.0.0 评审记录"
 ```
@@ -60,6 +67,7 @@ semantics:
 
 - `schema` 里每个字段与 DDL 列一一对应；`description` 与 DDL 列注释同文。
 - `semantics` 只写 `CONFIRMED` 语义；推断口径放 `design.md` 并标 `INFERRED`，**不得写进契约冒充事实**。
+- `semantics` 条目给出**可复算定义** `formula`：引用本契约其他字段、声明时间口径与过滤条件，使 QC 质检能独立复算核验；原始取数字段写 "不派生" 并注明来源。无 `formula` 的字段，质检复算只能 `WATCH`。
 - 未知项显式写 `null`（如 `coverage_start: null`），不默认套用其他市场。
 - 时间字段的 `format` 写 `YYYY-MM-DD` / `YYYY-MM-DD HH:MM:SS+08:00`；时区在顶层 `timezone` 声明，事件时间另有原始时区的在字段描述注明。
 

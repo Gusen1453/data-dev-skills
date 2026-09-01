@@ -29,6 +29,7 @@ npx skills add Gusen1453/data-dev-skills
 - 质检按**通用缺陷族**组织，行情、财务、公告、宏观的差异只作为判定前提放进 `references/`，不按场景拆 skill。
 - 多市场、多类型标的通过适配表处理，不按市场拆 skill。
 - 跨表一致性、时效覆盖、真实事故库各有一份统一参考，避免同样的规则抄在多处。
+- 契约口径**可复算**：`contract.yaml` 的 `semantics` 字段给出可独立复算的定义（对象/公式/时间口径/过滤），质检、接口以契约为准且不发明新口径。
 - 证据分为 `OBSERVED`、`INFERRED`、`CONFIRMED`；仅推断只能产生 `WATCH`。
 - 设计方法层独立于流水线执行器：`data-grill`（设计先行）、`data-solid`（结构审查）作为手动调用方法 skill，不在 router 的六责任分类内。
 - 组合持仓运营与交易账本不在范围内。

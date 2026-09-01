@@ -41,11 +41,14 @@ freshness_policy: "已确认实时/T+1/披露制度；未知则显式为 null"
 semantics:
   - field: "字段"
     meaning: "口径"
+    formula: "可复算定义：引用同契约其他字段、声明时间口径与过滤条件，使检查可独立复算核验；原始取数写 '不派生'"
     evidence_level: CONFIRMED
     source: "契约、规范或确认记录的版本化引用"
 ```
 
 契约只保存已确认且预期跨运行稳定的语义。候选字段映射不要偷偷写成事实；把它放入运行证据并标为 `INFERRED`。市场、标的与覆盖起点未确认时，在契约中显式标注未知，不得默认套用其他市场。
+
+**口径必须可复算：** 每个 `semantics` 条目给 `formula`（对象 + 公式 + 时间口径 + 过滤条件），QC 检查能据此独立复算核验，而不是只读一句散文；无 `formula` 的字段，质检复算只能 `WATCH`。这与 DDL 契约（`finance-ddl-design/references/data-contract.md`）同构。
 
 ## `checks/`
 
